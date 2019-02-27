@@ -1,0 +1,14 @@
+.Rhistory
+.Rapp.history
+
+.RData
+
+*-Ex.R
+
+.Rproj.user/
+
+.httr-oauth
+
+*.utf8.md
+
+rsconnect/

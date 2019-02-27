@@ -1,0 +1,124 @@
+---
+title: "UCSD Graduate Outcomes"
+output:  html_document
+params:
+  dfs: NA
+  dept: NA
+  year: NA
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#set working directory
+#"setwd('../data_research position/data projects/first_destination/stats')
+
+knitr::knit_hooks$set(inline=function(x){
+  if(!is.numeric(x)){
+    x
+  } else {
+    prettyNum(x, big.mark=",")
+  }
+})
+
+options(scipen=999)
+
+#load libraries
+toLoad <- c("ggplot2", "plyr", "ggmap","ggthemes", "reshape2", "knitr", "kableExtra", "scales")
+lapply(toLoad, library, character.only=T)
+
+theDept <- params$dept
+
+```
+
+```{r echo=F,message=F}
+dataframes <- params$dfs
+
+totalgrads <- nrow(dataframes$grads)
+
+breakdowns <- lapply(dataframes[c("employed", "continue_edu", "volunteer_service", "seeking", 
+                                  "notseeking", "planto_continue_edu", "military")],
+                     function(x) nrow(x[x$dept==theDept,]))
+totaloutcomes <- Reduce("+", breakdowns)
+
+bd_percents <- lapply(breakdowns, function(x) x/totaloutcomes)
+bd_percents <- lapply(bd_percents, round, digits=4)
+bd_percents <- lapply(bd_percents, function(x) x*100)
+```
+
+```{r echo=F}
+breakdowns <- melt(breakdowns)
+
+totalstruct <- length(dataframes$grads$Department[dataframes$grads$Department==theDept])
+totalKnownStruct <- sum(breakdowns$value)
+```
+**Year**: `r params$year`   
+**Department**: `r params$dept`  
+
+&nbsp;
+
+**Total UC San Diego Graduates**: `r totalgrads`
+    
+**Total Graduates**: `r totalstruct` (`r round(totalstruct/totalgrads, digits=4)*100`%)  
+**Total Outcomes Known**: `r totalKnownStruct`  
+**Department Knowledge Rate**: `r round(totalKnownStruct/totalstruct, digits = 4) * 100`%  
+
+&nbsp;
+
+Outcome breakdown:
+
+```{r echo=F}
+breakdowns$Outcome <- c("Employed", "Continuing Education", "Volunteering/Service", "Seeking Employment",
+                "Not Seeking Employment", "Planning to Continue Education", "Military")
+names(breakdowns) <- c("Count", "Outcome")
+breakdowns$Percentage <- round(breakdowns$Count/totalKnownStruct, digits=4) * 100
+
+kable_styling(kable(breakdowns,format="html"))
+```
+
+&nbsp;
+
+```{r echo=F}
+companies <- (summary(dataframes$employed$company[dataframes$employed$dept==theDept]))
+companies <- companies[companies > 0]
+companies <- names(companies)[-grep("^\\s*$", names(companies))]
+```
+
+
+**Employers**:
+
+* `r companies[1]` 
+* `r companies[2]`
+* `r companies[3]`
+* `r companies[4]`
+* `r companies[5]`
+* `r companies[6]`
+* More...
+
+
+&nbsp;
+
+```{r echo=F}
+structSalaries <- dataframes$employed$base_salary[dataframes$employed$dept==theDept]
+```
+
+**Salaries Reported**: `r length(structSalaries) - sum(is.na(structSalaries))` out of `r length(structSalaries)`  
+**Median Salary**: $`r median(structSalaries, na.rm=T)`  
+**Maximum Reported Salary**: $`r max(structSalaries, na.rm=T)`
+
+&nbsp;
+
+**Graduate Schools**:  
+
+```{r echo=F}
+gradSchools <- summary(dataframes$continue_edu$institution[dataframes$continue_edu$dept==theDept])
+gradSchools <- gradSchools[gradSchools > 0]
+gradSchools <- names(gradSchools)
+```
+
+
+* `r gradSchools[1]`
+* `r gradSchools[2]`
+* `r gradSchools[3]`
+* `r gradSchools[4]`
+
+&nbsp;
