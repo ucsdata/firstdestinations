@@ -1,4 +1,14 @@
 # firstdestinations
 A visualization dashboard for First Destinations, UCSD
 
-This repo contains the code for an R Shiny Web application for the annual First Destinations Project.
+This repo contains the code for an R Shiny Web application for the annual First Destinations Project. 
+The app is currently deployed on a shinyapps.io server: https://ucsdataresrch.shinyapps.io/firstdestinations.
+
+Development currently in progress - features to implement/fix:
+  - Overall summary visualizations for entire year
+  - Department report generation via RMarkdown
+  - Interactive Data tables for subsets of graduates
+    - Dynamic visualizations generated based on these given subsets
+  - etc...
+  
+Data used by the shiny app is accessed and stored via Dropbox API (use login specified in the logins document).
