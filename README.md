@@ -11,6 +11,7 @@ Development currently in progress - features to implement/fix:
   - Department report generation via RMarkdown
   - Interactive Data tables for user-selected subsets of graduates (by major, dept, college, grad.date, etc.)
     - Dynamic visualizations and statistics generated based on these given subsets
+    - Basic query functionality
   - Ability to download subsets of data in convenient .csv format
   - etc...
   
