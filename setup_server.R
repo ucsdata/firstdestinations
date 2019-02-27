@@ -46,8 +46,11 @@ addGroupLocs <- function(map, group, color, dflist){
   real_freqs <- freq$Freq
   
   #grab corresponding lons/lats from df 
-  lons <- unique(df$lon[order(as.character(df$location))])
-  lats <- unique(df$lat[order(as.character(df$location))])
+  lons <- unique(df[order(as.character(df$location)), c("lon", "location")])
+  lats <- unique(df[order(as.character(df$location)), c("lat", "location")])
+  
+  lons <- lons[!duplicated(lons$location),]
+  lats <- lats[!duplicated(lats$location),]
   
   #perform min-max normalization for scaling purposes
   sizes <- normalize(freq$Freq, 10) * 10
@@ -58,7 +61,7 @@ addGroupLocs <- function(map, group, color, dflist){
   location_text <- paste(location_titles, "</br>", "Students:", real_freqs)
   
   #add markers
-  marked_map <- addCircleMarkers(map, lng = lons, lat = lats, radius = sizes,
+  marked_map <- addCircleMarkers(map, lng = lons$lon, lat = lats$lat, radius = sizes,
                                  opacity = 0.7, popup = location_text)
   
   return(marked_map)
