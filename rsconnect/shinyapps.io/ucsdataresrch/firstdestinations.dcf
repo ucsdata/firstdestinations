@@ -1,0 +1,10 @@
+name: firstdestinations
+title:
+username:
+account: ucsdataresrch
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 412297
+bundleId: 1904145
+url: https://ucsdataresrch.shinyapps.io/firstdestinations/
+when: 1551290614.44926
