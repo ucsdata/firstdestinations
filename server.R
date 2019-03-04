@@ -17,7 +17,13 @@ shinyServer(function(input, output, session) {
               tags$br(), tags$br(),
               "Total Undergraduates: ", mydfs$progress[["grads"]], tags$br(),
               "Total Outcomes Known: ", mydfs$progress[["outcomes"]], tags$br(),
-              "Knowledge Rate: ", round(mydfs$progress[["ratio"]] * 100, 2), "%", tags$br()
+              "Knowledge Rate: ", round(mydfs$progress[["ratio"]] * 100, 2), "%", tags$br(),tags$br(),
+              "Salaries Reported: ", sum(!is.na(mydfs$employed$base_salary)), tags$br(),
+              "Median Salary: $", prettyNum(median(mydfs$employed$base_salary, na.rm = T), 
+                                            big.mark = ",", trim = TRUE), tags$br(),
+              "Highest Reported: $", prettyNum(max(mydfs$employed$base_salary, na.rm = T),
+                                               big.mark = ",", trim = TRUE), tags$br()
+              
         ))
       })
       
@@ -28,8 +34,8 @@ shinyServer(function(input, output, session) {
         myMajors$Subdepartment <- factor(myMajors$Subdepartment, 
                                          levels = rev(top15Majors))
         
-        ggplot2::ggplot(myMajors, ggplot2::aes(x = Subdepartment, fill = Department)) +
-          ggplot2::geom_bar(stat = "count") +
+        ggplot2::ggplot(myMajors, ggplot2::aes(x = Subdepartment)) +
+          ggplot2::geom_bar(stat = "count", color = "black", fill = "white") +
           ggplot2::theme_bw() +
           ggplot2::theme(legend.position = "none") +
           ggplot2::labs(title = paste("Top 15 Majors,", year), x = "major") +
