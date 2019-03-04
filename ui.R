@@ -17,8 +17,9 @@ navbarPage(theme = shinythemes::shinytheme("yeti"), id = "taskbar",
                           style="color: #fff; background-color: #337ab7; border-color: #2e6da4")
           ), 
           
-          column(4, 
-             htmlOutput("classtats")
+          column(9, 
+             htmlOutput("classtats"), tags$br(),
+             plotOutput("major.breakdown", height = "600px")
           )
         )         
     ),

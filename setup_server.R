@@ -1,3 +1,5 @@
+# setwd("C:/Users/Ryan/Documents/data_research position/data projects/first_destination/firstdestinations")
+
 #setup map (US default)
 gradmap <- leaflet::leaflet()
 gradmap <- leaflet::addTiles(gradmap)
@@ -10,8 +12,10 @@ gradmap <- leaflet::addCircleMarkers(gradmap, lng = ucsd[1], lat = ucsd[2],
                                      opacity = 0.9, radius = 11, 
                                      popup = paste("<b>UCSD</b>"))
 
-#min-max normalization
+#(log) min-max normalization
 normalize <- function (x, rem = TRUE) {
+  x <- log(x)
+  
   if (!is.numeric(x)) 
     return(x)
   mx <- max(x, na.rm = rem)
@@ -25,6 +29,7 @@ normalize <- function (x, rem = TRUE) {
 # Inputs:
 #     map: the map to add the locations to
 #     group: a character string containing the group name
+#     loc.var: location variable (string - either location or grad_univ)
 #     color: what color to mark the group
 #     dflist: the dataframe list which contains all the dataframes
 # Return:
@@ -33,30 +38,43 @@ normalize <- function (x, rem = TRUE) {
 addGroupLocs <- function(map, group, color, dflist){
   df <- dflist[group][[group]]
   
-  df <- df[!is.na(df$lon) & !is.na(df$lat) & !is.na(df$location),]
+  df <- df[!is.na(df$lon) & !is.na(df$lat) & 
+          (!is.na(df$location) || (!is.na(df$grad_univ))),]
   
   #clean location text
   df$location <- gsub(" +", " ", df$location)
   
+  if(group == "continue_edu"){
+    df$grad_univ <- gsub(" +", " ", df$grad_univ)
+  }
+  
   #count frequencies for each location
-  freq <- as.data.frame(table(df$location))
+  if(group == "employed") {
+    freq <- as.data.frame(table(df$location))
+  } else {
+    freq <- as.data.frame(table(df$grad_univ)) 
+  }
+  
+  
   freq <- freq[order(as.character(freq$Var1)),]
   
   #store actual frequencies
   real_freqs <- freq$Freq
   
   #grab corresponding lons/lats from df 
-  lons <- unique(df[order(as.character(df$location)), c("lon", "location")])
-  lats <- unique(df[order(as.character(df$location)), c("lat", "location")])
-  
-  lons <- lons[!duplicated(lons$location),]
-  lats <- lats[!duplicated(lats$location),]
+  if(group == "employed") {
+    lons <- unique(df[order(as.character(df$location)), c("lon", "location")])
+    lats <- unique(df[order(as.character(df$location)), c("lat", "location")])
+  } else {
+    lons <- unique(df[order(as.character(df$grad_univ)), c("lon", "grad_univ")])
+    lats <- unique(df[order(as.character(df$grad_univ)), c("lat", "grad_univ")])
+  }
   
   #perform min-max normalization for scaling purposes
   sizes <- normalize(freq$Freq, 10) * 10
   
   #create strings for marker popups
-  location_titles <- gsub(" ", ", ", freq$Var1)
+  location_titles <- freq$Var1
   location_titles <- paste0("<b>", location_titles, "</b>")
   location_text <- paste(location_titles, "</br>", "Students:", real_freqs)
   

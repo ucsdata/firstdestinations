@@ -2,7 +2,7 @@ source("setup_server.R", local = T)
 
 shinyServer(function(input, output, session) {
   
-    #grab the data for the selected year and update text
+    #grab the data for the selected year and update text/overview visualizations
     observeEvent(input$updata_all, {
       year = input$selectyear
       
@@ -19,6 +19,21 @@ shinyServer(function(input, output, session) {
               "Total Outcomes Known: ", mydfs$progress[["outcomes"]], tags$br(),
               "Knowledge Rate: ", round(mydfs$progress[["ratio"]] * 100, 2), "%", tags$br()
         ))
+      })
+      
+      #generate plot for top 20 majors
+      output$major.breakdown <- renderPlot({
+        top15Majors <- names(summary(factor(mydfs$grads$Subdepartment))[1:15])
+        myMajors <- mydfs$grads[mydfs$grads$Subdepartment %in% top15Majors,]
+        myMajors$Subdepartment <- factor(myMajors$Subdepartment, 
+                                         levels = rev(top15Majors))
+        
+        ggplot2::ggplot(myMajors, ggplot2::aes(x = Subdepartment, fill = Department)) +
+          ggplot2::geom_bar(stat = "count") +
+          ggplot2::theme_bw() +
+          ggplot2::theme(legend.position = "none") +
+          ggplot2::labs(title = paste("Top 15 Majors,", year), x = "major") +
+          ggplot2::coord_flip()
       })
       
       updateSelectInput(session, "selectDept", choices = mydfs$grads$Department)
