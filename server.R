@@ -67,7 +67,7 @@ shinyServer(function(input, output, session) {
     })
     
     
-    #check login credentials
+    # check login credentials
     observeEvent(input$login, {
       if(!(input$user == "ucsdataresearch" && input$pw == "ucalumnisd")){
         output$success <- renderText({"Invalid Login"})
@@ -77,13 +77,13 @@ shinyServer(function(input, output, session) {
         
     })
     
-    #update dropbox database
+    # update dropbox database
     observeEvent(input$submit, {
       source("update_dropbox.R", local = T)
       output$complete <- renderText({"Finished!"})
     })
     
-    #generate RMD PDF
+    # generate RMD PDF
     output$report <- downloadHandler(
       filename = "report.html",
       content = function(file) {
@@ -98,4 +98,32 @@ shinyServer(function(input, output, session) {
       }
     )
     
+    # Render interactive JS Datatables
+    output$all.table <- renderDataTable({
+      mydfs[["grads"]][,select.columns.all]
+    })
+    
+    output$employed.table <- renderDataTable({
+      mydfs[["employed"]][,select.columns.employed]
+    })
+    
+    output$c_ed.table <- renderDataTable({
+      mydfs[["continue_edu"]][,select.columns.c_ed]
+    })
+    
+    output$plan_ced.table <- renderDataTable({
+      mydfs[["planto_continue_edu"]][,select.columns.other]
+    })
+    
+    output$seek.table <- renderDataTable({
+      mydfs[["seeking_employment"]][,select.columns.other]
+    })
+    
+    output$notseek.table <- renderDataTable({
+      mydfs[["notseeking"]][,select.columns.other]
+    })
+  
+    output$volunteer.table <- renderDataTable({
+      mydfs[["volunteer_service"]][,select.columns.vol]
+    })  
 })

@@ -33,34 +33,38 @@ navbarPage(theme = shinythemes::shinytheme("yeti"), id = "taskbar",
         
         sidebarLayout(
          
-          sidebarPanel(width = 3, "Filters"
+          sidebarPanel(width = 3, "Filters", tags$br(),
+          actionButton("tomap", "Map these grads!"),
+          downloadButton("download", "Download as .csv")
             
           ),
           
           mainPanel(    
             tabsetPanel(   
               
-              tabPanel("All"),
+              tabPanel("All",
+                       dataTableOutput("all.table")),
               
-              tabPanel("Employed"),
+              tabPanel("Employed",
+                       dataTableOutput("employed.table")),
               
-              tabPanel("Continuing Education"),
+              tabPanel("Continuing Education",
+                       dataTableOutput("c_ed.table")),
               
-              tabPanel("Planning to Continue"),
+              tabPanel("Planning to Continue",
+                       dataTableOutput("plan_ced.table")),
               
-              tabPanel("Seeking Employment"),
+              tabPanel("Seeking Employment",
+                       dataTableOutput("seek.table")),
               
-              tabPanel("Not Seeking"),
+              tabPanel("Not Seeking",
+                       dataTableOutput("notseek.table")),
               
-              tabPanel("Volunteer"),
-              
-              tabPanel("Service")
+              tabPanel("Volunteer/Service",
+                       dataTableOutput("volunteer.table"))
             )
           )
-        ),
-        
-        actionButton("tomap", "Map these grads!"),
-        downloadButton("download", "Download as .csv")
+        )
     ),
     
     tabPanel("Interactive Map",

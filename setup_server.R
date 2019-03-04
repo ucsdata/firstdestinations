@@ -85,4 +85,17 @@ addGroupLocs <- function(map, group, color, dflist){
   return(marked_map)
 } 
 
-#function to recursively update a map from a list of maps
+# Columns for interactive DataTables
+select.columns.all <- c("status", "Date Graduated", "Subdepartment", "College",
+                        "Age", "Gender")
+
+select.columns.employed <- c("employment_type", "job_title", "base_salary", 
+                             "company", "major", "grad_date", "college")
+
+select.columns.c_ed <- c("grad_univ", "grad_program", "grad_degree", "grad_field",
+                         "major", "grad_date", "college")
+
+select.columns.other <- c("major", "college", "grad_date", "gender", "age")
+
+select.columns.vol <- c("job_title", "company", "base_salary", "major",
+                        "grad_date", "college")
